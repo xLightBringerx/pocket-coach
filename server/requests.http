@@ -1,0 +1,57 @@
+@baseUrl = http://localhost:4000/api
+
+### 1. Register a client (expect 201)
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test Client",
+  "email": "client@test.com",
+  "password": "password123"
+}
+
+### 2. Register the same email again (expect 409)
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test Client",
+  "email": "client@test.com",
+  "password": "password123"
+}
+
+### 3. Short password (expect 400)
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Short",
+  "email": "short@test.com",
+  "password": "123"
+}
+
+### 4. Wrong password (expect 401)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "client@test.com",
+  "password": "wrongpassword"
+}
+
+### 5. Log in (expect 200 and a token)
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "client@test.com",
+  "password": "password123"
+}
+
+### 6. Get my account with the token (expect 200). Run #5 first.
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{login.response.body.token}}
+
+### 7. Get my account without a token (expect 401)
+GET {{baseUrl}}/auth/me
