@@ -14,7 +14,13 @@ function errorHandler(err, req, res, next) {
   // Duplicate value in a unique field (like email)
   if (err.code === 11000) {
     status = 409;
-    message = "That email is already registered";
+    const field = Object.keys(err.keyValue || {})[0] || "value";
+    message = `That ${field} is already in use`;
+  }
+  // An id in the URL or body isn't a valid MongoDB id
+  if (err.name === "CastError") {
+    status = 400;
+    message = `Invalid ${err.path}: ${err.value}`;
   }
 
   if (status === 500) console.error(err); // log unexpected errors for debugging
