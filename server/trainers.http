@@ -1,0 +1,111 @@
+@baseUrl = http://localhost:4000/api
+
+### 1. List categories (expect 200, 5 categories)
+# @name categories
+GET {{baseUrl}}/categories
+
+### 2. List trainers (expect 200, 4 trainers)
+# @name trainers
+GET {{baseUrl}}/trainers
+
+### 3. Filter trainers by goal (expect 200, only Jordan)
+GET {{baseUrl}}/trainers?goal=bodybuilding
+
+### 4. One trainer with their services (expect 200)
+GET {{baseUrl}}/trainers/{{trainers.response.body.$.trainers[0]._id}}
+
+### 5. List services (expect 200, 8 services)
+# @name services
+GET {{baseUrl}}/services
+
+### 6. One service (expect 200)
+GET {{baseUrl}}/services/{{services.response.body.$.services[0]._id}}
+
+### 7. Invalid id (expect 400)
+GET {{baseUrl}}/services/not-a-real-id
+
+### 8. Log in as a seed trainer (expect 200)
+# @name jordan
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{ "email": "jordan@pocketcoach.test", "password": "password123" }
+
+### 9. My trainer profile (expect 200)
+GET {{baseUrl}}/trainers/me/profile
+Authorization: Bearer {{jordan.response.body.$.token}}
+
+### 10. Update my profile (expect 200, new bio)
+PUT {{baseUrl}}/trainers/me/profile
+Authorization: Bearer {{jordan.response.body.$.token}}
+Content-Type: application/json
+
+{ "bio": "Updated bio from the REST Client test." }
+
+### 11. Create a service (expect 201)
+# @name newService
+POST {{baseUrl}}/services
+Authorization: Bearer {{jordan.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "title": "Test Session",
+  "description": "Created by the REST Client test.",
+  "category": "{{categories.response.body.$.categories[0]._id}}",
+  "durationMin": 45,
+  "price": 50,
+  "goals": ["bodybuilding"]
+}
+
+### 12. Missing fields (expect 400)
+POST {{baseUrl}}/services
+Authorization: Bearer {{jordan.response.body.$.token}}
+Content-Type: application/json
+
+{ "title": "No price or duration" }
+
+### 13. Update my service (expect 200, price 55)
+PUT {{baseUrl}}/services/{{newService.response.body.$.service._id}}
+Authorization: Bearer {{jordan.response.body.$.token}}
+Content-Type: application/json
+
+{ "price": 55 }
+
+### 14. My services (expect 200, 3 services)
+GET {{baseUrl}}/services/mine
+Authorization: Bearer {{jordan.response.body.$.token}}
+
+### 15. Log in as a different trainer
+# @name maya
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{ "email": "maya@pocketcoach.test", "password": "password123" }
+
+### 16. Edit someone else's service (expect 403)
+PUT {{baseUrl}}/services/{{newService.response.body.$.service._id}}
+Authorization: Bearer {{maya.response.body.$.token}}
+Content-Type: application/json
+
+{ "price": 1 }
+
+### 17. Log in as your client test account
+# @name client
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{ "email": "client@test.com", "password": "password123" }
+
+### 18. Client tries to create a service (expect 403)
+POST {{baseUrl}}/services
+Authorization: Bearer {{client.response.body.$.token}}
+Content-Type: application/json
+
+{ "title": "Should not work" }
+
+### 19. Delete my service (expect 200)
+DELETE {{baseUrl}}/services/{{newService.response.body.$.service._id}}
+Authorization: Bearer {{jordan.response.body.$.token}}
+
+### 20. Deleted service is hidden from the public (expect 404)
+GET {{baseUrl}}/services/{{newService.response.body.$.service._id}}
