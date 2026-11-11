@@ -17,6 +17,7 @@ function toPublicUser(user) {
     email: user.email,
     role: user.role,
     onboardingComplete: user.onboardingComplete,
+    profile: user.profile || null,
   };
 }
 

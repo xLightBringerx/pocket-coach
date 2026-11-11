@@ -6,6 +6,7 @@ const categoryRoutes = require("./routes/categoryRoutes");
 const trainerRoutes = require("./routes/trainerRoutes");
 const serviceRoutes = require("./routes/serviceRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/trainers", trainerRoutes);
 app.use("/api/services", serviceRoutes);
 app.use("/api/bookings", bookingRoutes);
+app.use("/api/users", userRoutes);
 
 // These two must stay last
 app.use(notFound);
