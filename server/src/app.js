@@ -5,6 +5,7 @@ const { notFound, errorHandler } = require("./middleware/errorHandler");
 const categoryRoutes = require("./routes/categoryRoutes");
 const trainerRoutes = require("./routes/trainerRoutes");
 const serviceRoutes = require("./routes/serviceRoutes");
+const bookingRoutes = require("./routes/bookingRoutes");
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/trainers", trainerRoutes);
 app.use("/api/services", serviceRoutes);
+app.use("/api/bookings", bookingRoutes);
 
 // These two must stay last
 app.use(notFound);
