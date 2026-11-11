@@ -1,0 +1,92 @@
+@baseUrl = http://localhost:4000/api
+@monday = 2026-11-30
+@sunday = 2026-11-29
+
+### 1. Log in as Jordan (trainer)
+# @name jordan
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{ "email": "jordan@pocketcoach.test", "password": "password123" }
+
+### 2. Jordan's services (we book the first one)
+# @name jordanServices
+GET {{baseUrl}}/services/mine
+Authorization: Bearer {{jordan.response.body.$.token}}
+
+### 3. Open times on a Monday (expect 200 and a list starting at 06:00)
+GET {{baseUrl}}/bookings/slots?serviceId={{jordanServices.response.body.$.services[0]._id}}&date={{monday}}
+
+### 4. Open times on a Sunday (expect 200 and an empty list)
+GET {{baseUrl}}/bookings/slots?serviceId={{jordanServices.response.body.$.services[0]._id}}&date={{sunday}}
+
+### 5. Log in as the test client
+# @name client
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{ "email": "client@test.com", "password": "password123" }
+
+### 6. Book 09:00 (expect 201, status pending)
+# @name booking
+POST {{baseUrl}}/bookings
+Authorization: Bearer {{client.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "serviceId": "{{jordanServices.response.body.$.services[0]._id}}",
+  "date": "{{monday}}",
+  "startTime": "09:00",
+  "notes": "First session, a bit nervous!"
+}
+
+### 7. Book the same time again (expect 409)
+POST {{baseUrl}}/bookings
+Authorization: Bearer {{client.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "serviceId": "{{jordanServices.response.body.$.services[0]._id}}",
+  "date": "{{monday}}",
+  "startTime": "09:00"
+}
+
+### 8. Open times again (expect 09:00 to be gone)
+GET {{baseUrl}}/bookings/slots?serviceId={{jordanServices.response.body.$.services[0]._id}}&date={{monday}}
+
+### 9. Client's bookings (expect 1, with trainer name)
+GET {{baseUrl}}/bookings/mine
+Authorization: Bearer {{client.response.body.$.token}}
+
+### 10. Trainer's bookings (expect 1, with client name)
+GET {{baseUrl}}/bookings/mine
+Authorization: Bearer {{jordan.response.body.$.token}}
+
+### 11. Client tries to confirm (expect 403)
+PATCH {{baseUrl}}/bookings/{{booking.response.body.$.booking._id}}/status
+Authorization: Bearer {{client.response.body.$.token}}
+Content-Type: application/json
+
+{ "status": "confirmed" }
+
+### 12. Trainer confirms (expect 200, status confirmed)
+PATCH {{baseUrl}}/bookings/{{booking.response.body.$.booking._id}}/status
+Authorization: Bearer {{jordan.response.body.$.token}}
+Content-Type: application/json
+
+{ "status": "confirmed" }
+
+### 13. Client reschedules to 10:00 (expect 200, back to pending)
+PATCH {{baseUrl}}/bookings/{{booking.response.body.$.booking._id}}/reschedule
+Authorization: Bearer {{client.response.body.$.token}}
+Content-Type: application/json
+
+{ "date": "{{monday}}", "startTime": "10:00" }
+
+### 14. Client cancels (expect 200, status cancelled)
+PATCH {{baseUrl}}/bookings/{{booking.response.body.$.booking._id}}/cancel
+Authorization: Bearer {{client.response.body.$.token}}
+
+### 15. Cancel again (expect 400, already cancelled)
+PATCH {{baseUrl}}/bookings/{{booking.response.body.$.booking._id}}/cancel
+Authorization: Bearer {{client.response.body.$.token}}
