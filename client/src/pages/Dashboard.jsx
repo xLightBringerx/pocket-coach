@@ -6,7 +6,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <h1>Welcome, {firstName}</h1>
+      <h1 className="dashboard-title">Welcome, {firstName}</h1>
       <p className="muted">
         Signed in as {user.email} ({user.role})
       </p>

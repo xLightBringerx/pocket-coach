@@ -14,7 +14,7 @@
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   line-height: 1.5;
   color: var(--color-text);
-  background: var(--color-bg);
+  background: linear-gradient(135deg, #000000, #18322c, #1b9e80);
 }
 
 * {
@@ -303,6 +303,15 @@ legend {
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 16px;
   margin-top: 24px;
+}
+
+/* ---------- Dashboard ---------- */
+.dashboard-title {
+  display: inline-block; /* gradient spans just the text, not the full page width */
+  background: linear-gradient(90deg, #ffd153, #ff4d4d); /* blue to purple */
+  -webkit-background-clip: text; /* needed for Chrome, Edge and Safari */
+  background-clip: text;
+  color: transparent;
 }
 
 /* ---------- Phones ---------- */
