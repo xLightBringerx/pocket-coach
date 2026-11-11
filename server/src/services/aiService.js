@@ -159,14 +159,14 @@ async function generateWeeklyPlan(profile) {
   try {
     response = await getClient().messages.create({
       model: MODEL,
-      max_tokens: 4000,
+      max_tokens: 8000,
       system: SYSTEM_PROMPT,
       tools: [PLAN_TOOL],
-      tool_choice: { type: "tool", name: PLAN_TOOL.name }, // must answer by filling in the form
+      tool_choice: { type: "auto" }, // this model chooses tools itself; the prompt tells it to use ours
       messages: [
         {
           role: "user",
-          content: `Create this week's plan for this client.\n\nClient:\n${describeClient(profile)}\n\nExercise library:\n${library}`,
+          content: `Create this week's plan for this client.\n\nClient:\n${describeClient(profile)}\n\nExercise library:\n${library}\n\nRespond only by calling the save_weekly_plan tool.`,
         },
       ],
     });

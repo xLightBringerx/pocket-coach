@@ -1,0 +1,59 @@
+@baseUrl = http://localhost:4000/api
+
+### 1. Log in as the test client
+# @name client
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{ "email": "client@test.com", "password": "password123" }
+
+### 2. Save an imperial profile (expect 200, heightCm 177.8, weightKg 81.6, onboardingComplete true)
+PUT {{baseUrl}}/users/me/profile
+Authorization: Bearer {{client.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "units": "imperial",
+  "age": 28,
+  "heightFt": 5,
+  "heightIn": 10,
+  "weightLbs": 180,
+  "experience": "beginner",
+  "goal": "lifestyle",
+  "daysPerWeek": 3,
+  "dietPref": "none"
+}
+
+### 3. Missing goal (expect 400)
+PUT {{baseUrl}}/users/me/profile
+Authorization: Bearer {{client.response.body.$.token}}
+Content-Type: application/json
+
+{ "units": "metric", "age": 28, "heightCm": 178, "weightKg": 82, "experience": "beginner", "daysPerWeek": 3 }
+
+### 4. My account now includes the profile (expect 200)
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{client.response.body.$.token}}
+
+### 5. Generate a plan (expect 201 after 20-60 seconds: 7 days, 3 training days, nutrition)
+POST {{baseUrl}}/plans/generate
+Authorization: Bearer {{client.response.body.$.token}}
+
+### 6. Current plan (expect 200, same plan)
+GET {{baseUrl}}/plans/current
+Authorization: Bearer {{client.response.body.$.token}}
+
+### 7. Generate again right away (expect 429, cooldown)
+POST {{baseUrl}}/plans/generate
+Authorization: Bearer {{client.response.body.$.token}}
+
+### 8. Log in as a trainer
+# @name jordan
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{ "email": "jordan@pocketcoach.test", "password": "password123" }
+
+### 9. Trainer tries to generate a plan (expect 403)
+POST {{baseUrl}}/plans/generate
+Authorization: Bearer {{jordan.response.body.$.token}}
