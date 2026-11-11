@@ -12,6 +12,7 @@ import Dashboard from "./pages/Dashboard";
 import BookService from "./pages/BookService";
 import MyBookings from "./pages/MyBookings";
 import RescheduleBooking from "./pages/RescheduleBooking";
+import Onboarding from "./pages/Onboarding";
 import NotFound from "./pages/NotFound";
 
 export default function App() {
@@ -37,6 +38,7 @@ export default function App() {
         <Route element={<ProtectedRoute roles={["client"]} />}>
           <Route path="/book/:serviceId" element={<BookService />} />
           <Route path="/bookings/:id/reschedule" element={<RescheduleBooking />} />
+          <Route path="/onboarding" element={<Onboarding />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

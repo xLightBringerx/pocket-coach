@@ -42,7 +42,7 @@ export default function Register() {
         password: form.password,
         role: form.role,
       });
-      navigate("/dashboard", { replace: true });
+      navigate(form.role === "client" ? "/onboarding" : "/dashboard", { replace: true });
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
