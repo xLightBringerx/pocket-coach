@@ -43,3 +43,36 @@ export function initials(name = "") {
     .slice(0, 2)
     .toUpperCase();
 }
+
+export const ACTIVE_STATUSES = ["pending", "confirmed"];
+
+export const STATUS_LABELS = {
+  pending: "Pending",
+  confirmed: "Confirmed",
+  declined: "Declined",
+  cancelled: "Cancelled",
+  completed: "Completed",
+};
+
+// "2026-11-30" -> "Mon, Nov 30"
+export function formatDate(date) {
+  const [year, month, day] = date.split("-").map(Number);
+  return new Date(year, month - 1, day).toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+// Today as "YYYY-MM-DD" in the user's own time zone
+export function todayString() {
+  const now = new Date();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${now.getFullYear()}-${month}-${day}`;
+}
+
+// Hours from now until a booking starts (negative once it has started)
+export function hoursUntil(date, time) {
+  return (new Date(`${date}T${time}`) - Date.now()) / (1000 * 60 * 60);
+}
