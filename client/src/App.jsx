@@ -10,6 +10,7 @@ import Services from "./pages/Services";
 import ServiceDetail from "./pages/ServiceDetail";
 import Dashboard from "./pages/Dashboard";
 import BookService from "./pages/BookService";
+import MyBookings from "./pages/MyBookings";
 import NotFound from "./pages/NotFound";
 
 export default function App() {
@@ -28,6 +29,7 @@ export default function App() {
         {/* Logged-in users only */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/bookings" element={<MyBookings />} />
         </Route>
 
         {/* Clients only */}

@@ -45,6 +45,9 @@ export default function Navbar() {
               <NavLink to="/dashboard" onClick={closeMenu}>
                 Dashboard
               </NavLink>
+              <NavLink to="/bookings" onClick={closeMenu}>
+                Bookings
+              </NavLink>
               <span className="nav-user">Hi, {user.name.split(" ")[0]}</span>
               <button className="btn btn-outline" onClick={handleLogout}>
                 Log out
