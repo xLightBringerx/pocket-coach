@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Trainers from "./pages/Trainers";
+import TrainerDetail from "./pages/TrainerDetail";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 
@@ -17,6 +18,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/trainers" element={<Trainers />} />
+        <Route path="/trainers/:id" element={<TrainerDetail />} />
 
         {/* Logged-in users only */}
         <Route element={<ProtectedRoute />}>
