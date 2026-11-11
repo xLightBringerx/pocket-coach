@@ -36,6 +36,10 @@ export default function Navbar() {
             Trainers
           </NavLink>
 
+          <NavLink to="/services" onClick={closeMenu}>
+            Services
+          </NavLink>
+
           {user ? (
             <>
               <NavLink to="/dashboard" onClick={closeMenu}>
