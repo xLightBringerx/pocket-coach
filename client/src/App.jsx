@@ -7,6 +7,7 @@ import Register from "./pages/Register";
 import Trainers from "./pages/Trainers";
 import TrainerDetail from "./pages/TrainerDetail";
 import Services from "./pages/Services";
+import ServiceDetail from "./pages/ServiceDetail";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 
@@ -21,6 +22,7 @@ export default function App() {
         <Route path="/trainers" element={<Trainers />} />
         <Route path="/trainers/:id" element={<TrainerDetail />} />
         <Route path="/services" element={<Services />} />
+        <Route path="/services/:id" element={<ServiceDetail />} />
 
         {/* Logged-in users only */}
         <Route element={<ProtectedRoute />}>
