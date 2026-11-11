@@ -1,3 +1,4 @@
+import UpcomingBookings from "../components/UpcomingBookings";
 import useAuth from "../hooks/useAuth";
 
 export default function Dashboard() {
@@ -18,10 +19,7 @@ export default function Dashboard() {
             <p className="muted">Onboarding is coming soon. It's what builds your AI plan.</p>
           </div>
         )}
-        <div className="card">
-          <h3>Upcoming sessions</h3>
-          <p className="muted">Your bookings will show here.</p>
-        </div>
+        <UpcomingBookings />
         <div className="card">
           <h3>This week's plan</h3>
           <p className="muted">Your AI plan will show here.</p>
