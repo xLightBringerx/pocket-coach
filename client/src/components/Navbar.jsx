@@ -48,6 +48,11 @@ export default function Navbar() {
               <NavLink to="/bookings" onClick={closeMenu}>
                 Bookings
               </NavLink>
+              {user.role === "client" && (
+                <NavLink to="/plan" onClick={closeMenu}>
+                  My plan
+                </NavLink>
+              )}
               <span className="nav-user">Hi, {user.name.split(" ")[0]}</span>
               <button className="btn btn-outline" onClick={handleLogout}>
                 Log out
