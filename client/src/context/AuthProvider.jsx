@@ -30,13 +30,18 @@ export default function AuthProvider({ children }) {
     return saveSession(await registerUser(data));
   }
 
+  // Replace the logged-in user's details (e.g. after onboarding)
+  function updateUser(nextUser) {
+    setUser(nextUser);
+  }
+
   function logout() {
     localStorage.removeItem("token");
     setUser(null);
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, updateUser, logout }}>
       {children}
     </AuthContext.Provider>
   );

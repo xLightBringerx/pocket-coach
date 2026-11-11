@@ -623,6 +623,124 @@ textarea {
   }
 }
 
+/* ---------- Onboarding and plan ---------- */
+.onboarding-card {
+  max-width: 520px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.plan-section {
+  margin-bottom: 16px;
+}
+
+.section-title {
+  margin-top: 32px;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--color-primary-soft);
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.stat-unit {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-muted);
+}
+
+.day-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.day-header h3 {
+  margin: 0;
+}
+
+.rest-day {
+  background: #f9fafb;
+}
+
+.exercise-list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+}
+
+.exercise-list li {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.exercise-list p {
+  margin: 2px 0 0;
+}
+
+.exercise-sets {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 16px;
+  border: 4px solid var(--color-primary-soft);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 700px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .exercise-list li {
+    grid-template-columns: 1fr auto;
+  }
+}
+
 /* ---------- Phones ---------- */
 @media (max-width: 700px) {
   .menu-toggle {

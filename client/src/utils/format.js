@@ -76,3 +76,18 @@ export function todayString() {
 export function hoursUntil(date, time) {
   return (new Date(`${date}T${time}`) - Date.now()) / (1000 * 60 * 60);
 }
+
+export const EXPERIENCE_OPTIONS = [
+  { value: "none", label: "I've never worked out" },
+  { value: "beginner", label: "Beginner (under 1 year)" },
+  { value: "intermediate", label: "Intermediate (1 to 3 years)" },
+  { value: "advanced", label: "Advanced (3+ years)" },
+];
+
+export const DIET_OPTIONS = [
+  { value: "none", label: "No preference" },
+  { value: "vegetarian", label: "Vegetarian" },
+  { value: "vegan", label: "Vegan" },
+  { value: "keto", label: "Keto" },
+  { value: "other", label: "Other" },
+];
