@@ -9,6 +9,7 @@ import TrainerDetail from "./pages/TrainerDetail";
 import Services from "./pages/Services";
 import ServiceDetail from "./pages/ServiceDetail";
 import Dashboard from "./pages/Dashboard";
+import BookService from "./pages/BookService";
 import NotFound from "./pages/NotFound";
 
 export default function App() {
@@ -27,6 +28,11 @@ export default function App() {
         {/* Logged-in users only */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
+        </Route>
+
+        {/* Clients only */}
+        <Route element={<ProtectedRoute roles={["client"]} />}>
+          <Route path="/book/:serviceId" element={<BookService />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />
