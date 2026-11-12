@@ -1,5 +1,5 @@
 const express = require("express");
-const { generate, getCurrent } = require("../controllers/planController");
+const { generate, getCurrent, checkIn } = require("../controllers/planController");
 const { protect, requireRole } = require("../middleware/auth");
 
 const router = express.Router();
@@ -9,5 +9,6 @@ router.use(protect, requireRole("client"));
 
 router.get("/current", getCurrent);
 router.post("/generate", generate);
+router.post("/check-in", checkIn);
 
 module.exports = router;

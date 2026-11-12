@@ -7,8 +7,66 @@ const MODEL = process.env.ANTHROPIC_MODEL || "claude-opus-5-5";
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 const EXERCISE_IDS = EXERCISES.map((exercise) => exercise.id);
 
-// The rules Claude follows for every plan
-const SYSTEM_PROMPT = `You are PocketCoach, an experienced personal trainer and nutrition coach writing a one-week plan inside a fitness app.
+// ---------- Shared helpers ----------
+
+// Created on first use, so a missing key can't crash the server at startup
+let client;
+function getClient() {
+  if (!process.env.ANTHROPIC_API_KEY) {
+    throw new AppError("The AI coach isn't set up (missing ANTHROPIC_API_KEY)", 500);
+  }
+  if (!client) client = new Anthropic(); // reads ANTHROPIC_API_KEY from .env
+  return client;
+}
+
+// Sends one request to Claude and returns what it filled into our tool ("form")
+async function callTool({ system, tool, content, maxTokens }) {
+  let response;
+  try {
+    response = await getClient().messages.create({
+      model: MODEL,
+      max_tokens: maxTokens,
+      system,
+      tools: [tool],
+      tool_choice: { type: "auto" }, // this model chooses tools itself; the prompt tells it to use ours
+      messages: [{ role: "user", content }],
+    });
+  } catch (error) {
+    if (error instanceof AppError) throw error;
+    console.error("Anthropic API error:", error.status, error.message);
+    throw new AppError("The AI coach is unavailable right now. Please try again in a minute.", 502);
+  }
+
+  const toolUse = response.content.find((block) => block.type === "tool_use" && block.name === tool.name);
+  if (!toolUse) {
+    throw new AppError("The AI coach gave an unexpected answer. Please try again.", 502);
+  }
+  return toolUse.input;
+}
+
+function describeClient(profile) {
+  const { feet, inches } = cmToFeetInches(profile.heightCm);
+  return [
+    `Age: ${profile.age}`,
+    `Height: ${profile.heightCm} cm (${feet} ft ${inches} in)`,
+    `Weight: ${profile.weightKg} kg (${kgToLbs(profile.weightKg)} lbs)`,
+    `Training experience: ${profile.experience}`,
+    `Goal: ${profile.goal}`,
+    `Training days per week: ${profile.daysPerWeek}`,
+    `Diet preference: ${profile.dietPref}`,
+  ].join("\n");
+}
+
+// Keep a number inside a safe range
+function clamp(value, min, max) {
+  const number = Math.round(Number(value));
+  if (Number.isNaN(number)) return min;
+  return Math.min(max, Math.max(min, number));
+}
+
+// ---------- Weekly plan ----------
+
+const PLAN_PROMPT = `You are PocketCoach, an experienced personal trainer and nutrition coach writing a one-week plan inside a fitness app.
 Rules:
 - Give general fitness and nutrition guidance only. No medical advice or diagnoses, and no supplements beyond protein powder.
 - Match the plan to the client's goal, experience and training days per week. Use exactly that many training days; the other days are rest or light recovery.
@@ -16,6 +74,7 @@ Rules:
 - Only use exercises from the provided library, by exerciseId.
 - Respect the diet preference in the sample meals.
 - Calories must be realistic for the client's size and goal, and never below 1,200 per day.
+- If adjustments from last week's check-in are given, apply them.
 - Keep notes to one short, encouraging sentence.
 Save the plan with the save_weekly_plan tool.`;
 
@@ -78,36 +137,6 @@ const PLAN_TOOL = {
   },
 };
 
-// Created on first use, so a missing key can't crash the server at startup
-let client;
-function getClient() {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    throw new AppError("The AI coach isn't set up (missing ANTHROPIC_API_KEY)", 500);
-  }
-  if (!client) client = new Anthropic(); // reads ANTHROPIC_API_KEY from .env
-  return client;
-}
-
-function describeClient(profile) {
-  const { feet, inches } = cmToFeetInches(profile.heightCm);
-  return [
-    `Age: ${profile.age}`,
-    `Height: ${profile.heightCm} cm (${feet} ft ${inches} in)`,
-    `Weight: ${profile.weightKg} kg (${kgToLbs(profile.weightKg)} lbs)`,
-    `Training experience: ${profile.experience}`,
-    `Goal: ${profile.goal}`,
-    `Training days per week: ${profile.daysPerWeek}`,
-    `Diet preference: ${profile.dietPref}`,
-  ].join("\n");
-}
-
-// Keep a number inside a safe range
-function clamp(value, min, max) {
-  const number = Math.round(Number(value));
-  if (Number.isNaN(number)) return min;
-  return Math.min(max, Math.max(min, number));
-}
-
 // Never trust AI output blindly: check and clean it before saving
 function validatePlan(raw) {
   if (!raw || !Array.isArray(raw.days) || raw.days.length !== 7 || !raw.nutrition) {
@@ -152,35 +181,90 @@ function validatePlan(raw) {
   };
 }
 
-async function generateWeeklyPlan(profile) {
+async function generateWeeklyPlan(profile, adjustments = []) {
   const library = EXERCISES.map((e) => `- ${e.id}: ${e.name} (${e.category}, ${e.level})`).join("\n");
+  const adjustmentText = adjustments.length
+    ? `\n\nApply these adjustments from last week's check-in:\n${adjustments.map((a) => `- ${a}`).join("\n")}`
+    : "";
 
-  let response;
-  try {
-    response = await getClient().messages.create({
-      model: MODEL,
-      max_tokens: 8000,
-      system: SYSTEM_PROMPT,
-      tools: [PLAN_TOOL],
-      tool_choice: { type: "auto" }, // this model chooses tools itself; the prompt tells it to use ours
-      messages: [
-        {
-          role: "user",
-          content: `Create this week's plan for this client.\n\nClient:\n${describeClient(profile)}\n\nExercise library:\n${library}\n\nRespond only by calling the save_weekly_plan tool.`,
-        },
-      ],
-    });
-  } catch (error) {
-    if (error instanceof AppError) throw error;
-    console.error("Anthropic API error:", error.status, error.message);
-    throw new AppError("The AI coach is unavailable right now. Please try again in a minute.", 502);
-  }
-
-  const toolUse = response.content.find((block) => block.type === "tool_use");
-  if (!toolUse) {
-    throw new AppError("The AI coach gave an unexpected answer. Please try again.", 502);
-  }
-  return validatePlan(toolUse.input);
+  const input = await callTool({
+    system: PLAN_PROMPT,
+    tool: PLAN_TOOL,
+    maxTokens: 8000,
+    content: `Create this week's plan for this client.\n\nClient:\n${describeClient(profile)}${adjustmentText}\n\nExercise library:\n${library}\n\nRespond only by calling the save_weekly_plan tool.`,
+  });
+  return validatePlan(input);
 }
 
-module.exports = { generateWeeklyPlan, MODEL };
+// ---------- Weekly check-in ----------
+
+const CHECKIN_PROMPT = `You are PocketCoach reviewing a client's week in a fitness app. Compare their plan with what they actually logged.
+Rules:
+- Be specific and encouraging, and use the numbers you are given.
+- Give 3 to 5 practical adjustments for next week (training days, exercise swaps, calorie or protein changes, habits).
+- If little was logged, focus on small, realistic steps to build the habit.
+- General fitness guidance only, no medical advice.
+Save the result with the save_check_in tool.`;
+
+const CHECKIN_TOOL = {
+  name: "save_check_in",
+  description: "Save the weekly check-in: a short summary and specific adjustments for next week's plan.",
+  input_schema: {
+    type: "object",
+    properties: {
+      summary: { type: "string", description: "2-3 sentences comparing what was planned with what was done" },
+      adjustments: {
+        type: "array",
+        items: { type: "string" },
+        description: "3 to 5 specific, practical changes for next week",
+      },
+    },
+    required: ["summary", "adjustments"],
+  },
+};
+
+async function generateCheckIn(profile, plan, stats, logs) {
+  const workoutLines =
+    logs
+      .filter((l) => l.type === "workout")
+      .map((l) => `- ${l.date}: ${l.exerciseName}`)
+      .join("\n") || "- none logged";
+  const mealLines =
+    logs
+      .filter((l) => l.type === "meal")
+      .map((l) => `- ${l.date}: ${l.mealName} (${l.calories} kcal, ${l.proteinG} g protein)`)
+      .join("\n") || "- none logged";
+
+  const input = await callTool({
+    system: CHECKIN_PROMPT,
+    tool: CHECKIN_TOOL,
+    maxTokens: 2000,
+    content: [
+      `Client:\n${describeClient(profile)}`,
+      `This week's plan (week of ${plan.weekStart}):`,
+      `- Training days planned: ${stats.workoutsPlanned}`,
+      `- Exercises planned: ${stats.exercisesPlanned}`,
+      `- Daily targets: ${plan.nutrition.calories} kcal, ${plan.nutrition.proteinG} g protein`,
+      `What was logged:`,
+      `- Days trained: ${stats.workoutsDone}`,
+      `- Exercises completed: ${stats.exercisesDone}`,
+      `- Days with meals logged: ${stats.mealDaysLogged}`,
+      `- Average on logged days: ${stats.avgCalories} kcal, ${stats.avgProteinG} g protein`,
+      `Workout log:\n${workoutLines}`,
+      `Meal log:\n${mealLines}`,
+      `Respond only by calling the save_check_in tool.`,
+    ].join("\n\n"),
+  });
+
+  // Check the AI output before saving it
+  const adjustments = (Array.isArray(input.adjustments) ? input.adjustments : [])
+    .map((a) => String(a).trim())
+    .filter(Boolean)
+    .slice(0, 5);
+  if (!input.summary || adjustments.length === 0) {
+    throw new AppError("The AI coach returned an incomplete check-in. Please try again.", 502);
+  }
+  return { summary: String(input.summary), adjustments };
+}
+
+module.exports = { generateWeeklyPlan, generateCheckIn, MODEL };

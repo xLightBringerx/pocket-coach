@@ -18,4 +18,13 @@ async function getCurrent(req, res, next) {
   }
 }
 
-module.exports = { generate, getCurrent };
+async function checkIn(req, res, next) {
+  try {
+    const plan = await planService.runCheckIn(req.user);
+    res.json({ plan });
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = { generate, getCurrent, checkIn };
