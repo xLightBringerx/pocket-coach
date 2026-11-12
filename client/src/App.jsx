@@ -9,8 +9,9 @@ import TrainerDetail from "./pages/TrainerDetail";
 import Services from "./pages/Services";
 import ServiceDetail from "./pages/ServiceDetail";
 import Dashboard from "./pages/Dashboard";
-import BookService from "./pages/BookService";
 import MyBookings from "./pages/MyBookings";
+import Account from "./pages/Account";
+import BookService from "./pages/BookService";
 import RescheduleBooking from "./pages/RescheduleBooking";
 import Onboarding from "./pages/Onboarding";
 import Plan from "./pages/Plan";
@@ -33,6 +34,7 @@ export default function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/bookings" element={<MyBookings />} />
+          <Route path="/account" element={<Account />} />
         </Route>
 
         {/* Clients only */}

@@ -888,6 +888,17 @@ img.avatar {
   white-space: nowrap;
 }
 
+/* Upload button is a label, so undo the column layout labels normally get */
+.account-photo-actions label {
+  display: inline-block;
+}
+
+/* Show a focus ring on the upload button for keyboard users */
+.account-photo-actions label:focus-within {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
 /* ---------- Phones ---------- */
 @media (max-width: 700px) {
   .menu-toggle {

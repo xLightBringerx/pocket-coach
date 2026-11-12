@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
+import Avatar from "./Avatar";
 import useAuth from "../hooks/useAuth";
 
 export default function Navbar() {
@@ -53,7 +54,10 @@ export default function Navbar() {
                   My plan
                 </NavLink>
               )}
-              <span className="nav-user">Hi, {user.name.split(" ")[0]}</span>
+              <NavLink to="/account" className="nav-account" onClick={closeMenu}>
+                <Avatar name={user.name} photo={user.photo} size="sm" />
+                <span>Hi, {user.name.split(" ")[0]}</span>
+              </NavLink>
               <button className="btn btn-outline" onClick={handleLogout}>
                 Log out
               </button>
