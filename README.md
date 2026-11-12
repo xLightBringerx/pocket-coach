@@ -179,7 +179,7 @@ On Render, CLIENT_URL lists both the local and live website addresses, separated
 
 How AI was used during development
 
-I used Claude (Anthropic) as a development assistant throughout this project, as the course allows. I made the final decisions and tested everything.
+I used Claude (Anthropic) as a development assistant throughout this project, as the course allows. I reviewed all code given as I went along and made the final decisions and tested everything.
 
 Planning: turning the brief into an app outline, user stories, wireframes and the architecture and database design.
 Building: Claude wrote a step-by-step build guide with code for each step. I created the files, ran the code, tested each step and committed my work in small, separate commits.
