@@ -99,8 +99,8 @@ async function listMyBookings(user) {
 
   return Booking.find(filter)
     .populate("service", "title")
-    .populate("client", "name email")
-    .populate({ path: "trainer", select: "user location", populate: { path: "user", select: "name" } })
+    .populate("client", "name email photo")
+    .populate({ path: "trainer", select: "user location", populate: { path: "user", select: "name photo" } })
     .sort({ date: 1, startTime: 1 });
 }
 

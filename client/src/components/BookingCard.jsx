@@ -1,19 +1,26 @@
 import { Link } from "react-router-dom";
+import Avatar from "./Avatar";
 import { ACTIVE_STATUSES, STATUS_LABELS, formatDate, formatPrice, formatTime, hoursUntil } from "../utils/format";
 
 export default function BookingCard({ booking, role, busy, onCancel, onStatusChange }) {
   const isActive = ACTIVE_STATUSES.includes(booking.status);
   const clientCanChange = role === "client" && isActive && hoursUntil(booking.date, booking.startTime) > 24;
-  const otherPerson = role === "trainer" ? booking.client?.name : booking.trainer?.user?.name;
+
+  // Trainers see the client; clients see the trainer
+  const otherPerson = role === "trainer" ? booking.client : booking.trainer?.user;
+  const otherName = otherPerson?.name || "Unknown";
 
   return (
     <div className="card booking-card">
       <div>
         <span className={`status status-${booking.status}`}>{STATUS_LABELS[booking.status]}</span>
         <h3>{booking.service?.title}</h3>
-        <p className="muted small">
-          {role === "trainer" ? "Client" : "Trainer"}: {otherPerson}
-        </p>
+        <div className="booking-person">
+          <Avatar name={otherName} photo={otherPerson?.photo} size="sm" />
+          <span className="muted small">
+            {role === "trainer" ? "Client" : "Trainer"}: {otherName}
+          </span>
+        </div>
         <p>
           <strong>{formatDate(booking.date)}</strong> · {formatTime(booking.startTime)} –{" "}
           {formatTime(booking.endTime)} · {formatPrice(booking.price)}

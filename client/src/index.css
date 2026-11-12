@@ -899,6 +899,14 @@ img.avatar {
   outline-offset: 2px;
 }
 
+/* Photo and name of the other person on a booking card */
+.booking-person {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0;
+}
+
 /* ---------- Phones ---------- */
 @media (max-width: 700px) {
   .menu-toggle {
