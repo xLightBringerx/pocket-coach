@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { getErrorMessage } from "../api/client";
+import PasswordInput from "../components/PasswordInput";
 
 export default function Login() {
   const { login } = useAuth();
@@ -41,17 +42,13 @@ export default function Login() {
           <input type="email" name="email" value={form.email} onChange={handleChange} required autoComplete="email" />
         </label>
 
-        <label>
-          Password
-          <input
-            type="password"
-            name="password"
-            value={form.password}
-            onChange={handleChange}
-            required
-            autoComplete="current-password"
-          />
-        </label>
+        <PasswordInput
+          label="Password"
+          name="password"
+          value={form.password}
+          onChange={handleChange}
+          autoComplete="current-password"
+        />
 
         <button className="btn btn-primary btn-block" disabled={submitting}>
           {submitting ? "Logging in..." : "Log in"}

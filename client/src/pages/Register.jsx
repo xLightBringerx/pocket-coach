@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { getErrorMessage } from "../api/client";
+import PasswordInput from "../components/PasswordInput";
 
 export default function Register() {
   const { register } = useAuth();
@@ -66,29 +67,21 @@ export default function Register() {
           <input type="email" name="email" value={form.email} onChange={handleChange} required autoComplete="email" />
         </label>
 
-        <label>
-          Password
-          <input
-            type="password"
-            name="password"
-            value={form.password}
-            onChange={handleChange}
-            required
-            autoComplete="new-password"
-          />
-        </label>
+        <PasswordInput
+          label="Password"
+          name="password"
+          value={form.password}
+          onChange={handleChange}
+          autoComplete="new-password"
+        />
 
-        <label>
-          Confirm password
-          <input
-            type="password"
-            name="confirmPassword"
-            value={form.confirmPassword}
-            onChange={handleChange}
-            required
-            autoComplete="new-password"
-          />
-        </label>
+        <PasswordInput
+          label="Confirm password"
+          name="confirmPassword"
+          value={form.confirmPassword}
+          onChange={handleChange}
+          autoComplete="new-password"
+        />
 
         <fieldset>
           <legend>I am a...</legend>
