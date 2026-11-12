@@ -15,6 +15,7 @@ import BookService from "./pages/BookService";
 import RescheduleBooking from "./pages/RescheduleBooking";
 import Onboarding from "./pages/Onboarding";
 import Plan from "./pages/Plan";
+import Log from "./pages/Log";
 import NotFound from "./pages/NotFound";
 
 export default function App() {
@@ -43,6 +44,7 @@ export default function App() {
           <Route path="/bookings/:id/reschedule" element={<RescheduleBooking />} />
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/plan" element={<Plan />} />
+          <Route path="/log" element={<Log />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

@@ -50,9 +50,14 @@ export default function Navbar() {
                 Bookings
               </NavLink>
               {user.role === "client" && (
-                <NavLink to="/plan" onClick={closeMenu}>
-                  My plan
-                </NavLink>
+                <>
+                  <NavLink to="/plan" onClick={closeMenu}>
+                    My plan
+                  </NavLink>
+                  <NavLink to="/log" onClick={closeMenu}>
+                    Log
+                  </NavLink>
+                </>
               )}
               <NavLink to="/account" className="nav-account" onClick={closeMenu}>
                 <Avatar name={user.name} photo={user.photo} size="sm" />
