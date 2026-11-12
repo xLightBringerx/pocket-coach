@@ -847,6 +847,47 @@ textarea {
   outline: 2px solid var(--color-primary);
 }
 
+/* ---------- Profile photos ---------- */
+img.avatar {
+  object-fit: cover;
+  border: 2px solid var(--color-primary);
+}
+
+.avatar-sm {
+  width: 32px;
+  height: 32px;
+  font-size: 0.75rem;
+}
+
+.nav-account {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.account-photo {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.account-photo-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* The real file input is hidden; its label is styled as a button instead */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 /* ---------- Phones ---------- */
 @media (max-width: 700px) {
   .menu-toggle {
