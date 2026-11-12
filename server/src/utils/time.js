@@ -24,4 +24,11 @@ function startDateTime(date, time) {
   return new Date(`${date}T${time}:00`);
 }
 
-module.exports = { DATE_PATTERN, TIME_PATTERN, toMinutes, toTime, dayOfWeek, startDateTime };
+// ("2026-11-09", 6) -> "2026-11-15"
+function addDays(date, days) {
+  const d = new Date(`${date}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
+module.exports = { DATE_PATTERN, TIME_PATTERN, toMinutes, toTime, dayOfWeek, startDateTime, addDays };

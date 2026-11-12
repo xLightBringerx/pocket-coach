@@ -25,6 +25,23 @@ const planDaySchema = new mongoose.Schema(
 
 const mealSchema = new mongoose.Schema({ meal: String, description: String }, { _id: false });
 
+// The AI's review of the week: the numbers it was given, plus its summary and changes
+const checkInSchema = new mongoose.Schema(
+  {
+    summary: String,
+    adjustments: [String],
+    workoutsPlanned: Number,
+    workoutsDone: Number,
+    exercisesPlanned: Number,
+    exercisesDone: Number,
+    mealDaysLogged: Number,
+    avgCalories: Number,
+    avgProteinG: Number,
+    createdAt: Date,
+  },
+  { _id: false }
+);
+
 const planSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
@@ -40,6 +57,8 @@ const planSchema = new mongoose.Schema(
       sampleMeals: [mealSchema],
     },
     aiModel: { type: String, default: "" }, // which AI model wrote it
+    appliedAdjustments: [String], // check-in changes this plan was built with
+    checkIn: checkInSchema, // this week's AI check-in (empty until the client runs one)
   },
   { timestamps: true }
 );
