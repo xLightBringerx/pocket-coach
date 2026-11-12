@@ -2,7 +2,8 @@ import { Link, useParams } from "react-router-dom";
 import ServiceCard from "../components/ServiceCard";
 import useApiData from "../hooks/useApiData";
 import { fetchTrainer } from "../api/catalogApi";
-import { DAY_NAMES, GOAL_LABELS, formatTime, initials } from "../utils/format";
+import Avatar from "../components/Avatar";
+import { DAY_NAMES, GOAL_LABELS, formatTime } from "../utils/format";
 
 export default function TrainerDetail() {
   const { id } = useParams(); // the :id part of /trainers/:id
@@ -31,9 +32,7 @@ export default function TrainerDetail() {
       </Link>
 
       <section className="card detail-header">
-        <div className="avatar avatar-lg" aria-hidden="true">
-          {initials(name)}
-        </div>
+        <Avatar name={name} photo={trainer.user.photo} size="lg" />
         <div>
           <h1>{name}</h1>
           <p className="muted">

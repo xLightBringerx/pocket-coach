@@ -1,14 +1,13 @@
 import { Link } from "react-router-dom";
-import { GOAL_LABELS, initials } from "../utils/format";
+import Avatar from "./Avatar";
+import { GOAL_LABELS } from "../utils/format";
 
 export default function TrainerCard({ trainer }) {
   const name = trainer.user?.name || "Trainer";
 
   return (
     <Link to={`/trainers/${trainer._id}`} className="card trainer-card">
-      <div className="avatar" aria-hidden="true">
-        {initials(name)}
-      </div>
+      <Avatar name={name} photo={trainer.user?.photo} />
       <div>
         <h3>{name}</h3>
         <p className="muted small">
