@@ -201,7 +201,7 @@ async function generateWeeklyPlan(profile, adjustments = []) {
 const CHECKIN_PROMPT = `You are PocketCoach reviewing a client's week in a fitness app. Compare their plan with what they actually logged.
 Rules:
 - Be specific and encouraging, and use the numbers you are given.
-- Give 3 to 5 practical adjustments for next week (training days, exercise swaps, calorie or protein changes, habits).
+- Give 3 to 5 practical adjustments for next week (training days, exercise swaps, calorie or macro changes, habits).
 - If little was logged, focus on small, realistic steps to build the habit.
 - General fitness guidance only, no medical advice.
 Save the result with the save_check_in tool.`;
@@ -232,7 +232,10 @@ async function generateCheckIn(profile, plan, stats, logs) {
   const mealLines =
     logs
       .filter((l) => l.type === "meal")
-      .map((l) => `- ${l.date}: ${l.mealName} (${l.calories} kcal, ${l.proteinG} g protein)`)
+      .map(
+        (l) =>
+          `- ${l.date}: ${l.mealName} (${l.calories} kcal, ${l.proteinG} g protein, ${l.carbsG || 0} g carbs, ${l.fatG || 0} g fat)`
+      )
       .join("\n") || "- none logged";
 
   const input = await callTool({
@@ -244,12 +247,12 @@ async function generateCheckIn(profile, plan, stats, logs) {
       `This week's plan (week of ${plan.weekStart}):`,
       `- Training days planned: ${stats.workoutsPlanned}`,
       `- Exercises planned: ${stats.exercisesPlanned}`,
-      `- Daily targets: ${plan.nutrition.calories} kcal, ${plan.nutrition.proteinG} g protein`,
+      `- Daily targets: ${plan.nutrition.calories} kcal, ${plan.nutrition.proteinG} g protein, ${plan.nutrition.carbsG} g carbs, ${plan.nutrition.fatG} g fat`,
       `What was logged:`,
       `- Days trained: ${stats.workoutsDone}`,
       `- Exercises completed: ${stats.exercisesDone}`,
       `- Days with meals logged: ${stats.mealDaysLogged}`,
-      `- Average on logged days: ${stats.avgCalories} kcal, ${stats.avgProteinG} g protein`,
+      `- Average on logged days: ${stats.avgCalories} kcal, ${stats.avgProteinG} g protein, ${stats.avgCarbsG} g carbs, ${stats.avgFatG} g fat`,
       `Workout log:\n${workoutLines}`,
       `Meal log:\n${mealLines}`,
       `Respond only by calling the save_check_in tool.`,

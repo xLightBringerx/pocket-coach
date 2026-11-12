@@ -39,7 +39,7 @@ POST {{baseUrl}}/logs/meal
 Authorization: Bearer {{client.response.body.$.token}}
 Content-Type: application/json
 
-{ "date": "{{plan.response.body.$.plan.weekStart}}", "mealName": "Chicken and rice", "calories": 650, "proteinG": 45 }
+{ "date": "{{plan.response.body.$.plan.weekStart}}", "mealName": "Chicken and rice", "calories": 650, "proteinG": 45, "carbsG": 70, "fatG": 15 }
 
 ### 7. Meal without a name (expect 400)
 POST {{baseUrl}}/logs/meal

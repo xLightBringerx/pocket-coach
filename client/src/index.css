@@ -942,27 +942,27 @@ img.avatar {
   accent-color: var(--color-primary);
 }
 
+/* Meal name on top, the four numbers in two columns, then the button */
 .meal-form {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr auto;
+  grid-template-columns: 1fr 1fr;
   align-items: end;
   gap: 8px;
+}
+
+.meal-form label:first-child,
+.meal-form button {
+  grid-column: 1 / -1;
+}
+
+.meal-form input {
+  width: 100%;
+  min-width: 0; /* lets number boxes shrink instead of overflowing the card */
 }
 
 .btn-small {
   padding: 4px 10px;
   font-size: 0.85rem;
-}
-
-@media (max-width: 700px) {
-  .meal-form {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .meal-form label:first-child,
-  .meal-form button {
-    grid-column: 1 / -1;
-  }
 }
 
 /* ---------- Phones ---------- */

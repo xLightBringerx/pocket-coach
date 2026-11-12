@@ -6,7 +6,15 @@ import { deleteLog, fetchWeekLogs, logMeal, logWorkout } from "../api/logApi";
 import { getErrorMessage } from "../api/client";
 import { addDaysTo, dayNameOf, formatDate, todayString } from "../utils/format";
 
-const EMPTY_MEAL = { mealName: "", calories: "", proteinG: "" };
+const EMPTY_MEAL = { mealName: "", calories: "", proteinG: "", carbsG: "", fatG: "" };
+
+// The number fields in the meal form
+const MEAL_FIELDS = [
+  { name: "calories", label: "Calories", max: 5000 },
+  { name: "proteinG", label: "Protein (g)", max: 400 },
+  { name: "carbsG", label: "Carbs (g)", max: 800 },
+  { name: "fatG", label: "Fat (g)", max: 300 },
+];
 
 export default function Log() {
   const { data: plan, error: planError, loading: planLoading } = useApiData(fetchCurrentPlan, "plan");
@@ -45,8 +53,7 @@ export default function Log() {
   const dayLogs = (logs || []).filter((l) => l.date === date);
   const workoutLogs = dayLogs.filter((l) => l.type === "workout");
   const mealLogs = dayLogs.filter((l) => l.type === "meal");
-  const caloriesToday = mealLogs.reduce((sum, l) => sum + l.calories, 0);
-  const proteinToday = mealLogs.reduce((sum, l) => sum + l.proteinG, 0);
+  const total = (field) => mealLogs.reduce((sum, l) => sum + (l[field] || 0), 0);
   const exercises = planDay && !planDay.isRest ? planDay.exercises : [];
   const doneCount = exercises.filter((ex) => workoutLogs.some((l) => l.exerciseId === ex.exerciseId)).length;
 
@@ -149,14 +156,10 @@ export default function Log() {
         <section className="card">
           <h2>Meals</h2>
           <div className="stat-grid">
-            <div className="stat">
-              <span className="stat-value">{caloriesToday}</span>
-              <span className="muted small">of {plan.nutrition.calories} kcal</span>
-            </div>
-            <div className="stat">
-              <span className="stat-value">{proteinToday} g</span>
-              <span className="muted small">of {plan.nutrition.proteinG} g protein</span>
-            </div>
+            <Total value={total("calories")} target={plan.nutrition.calories} unit="kcal" label="" />
+            <Total value={total("proteinG")} target={plan.nutrition.proteinG} unit="g" label="protein" />
+            <Total value={total("carbsG")} target={plan.nutrition.carbsG} unit="g" label="carbs" />
+            <Total value={total("fatG")} target={plan.nutrition.fatG} unit="g" label="fat" />
           </div>
 
           {mealLogs.length > 0 && (
@@ -166,7 +169,7 @@ export default function Log() {
                   <span>
                     <strong>{m.mealName}</strong>{" "}
                     <span className="muted small">
-                      {m.calories} kcal · {m.proteinG} g protein
+                      {m.calories} kcal · {m.proteinG} g protein · {m.carbsG || 0} g carbs · {m.fatG || 0} g fat
                     </span>
                   </span>
                   <button
@@ -191,26 +194,18 @@ export default function Log() {
                 required
               />
             </label>
-            <label>
-              Calories
-              <input
-                type="number"
-                min="0"
-                max="5000"
-                value={meal.calories}
-                onChange={(e) => setMeal({ ...meal, calories: e.target.value })}
-              />
-            </label>
-            <label>
-              Protein (g)
-              <input
-                type="number"
-                min="0"
-                max="400"
-                value={meal.proteinG}
-                onChange={(e) => setMeal({ ...meal, proteinG: e.target.value })}
-              />
-            </label>
+            {MEAL_FIELDS.map((field) => (
+              <label key={field.name}>
+                {field.label}
+                <input
+                  type="number"
+                  min="0"
+                  max={field.max}
+                  value={meal[field.name]}
+                  onChange={(e) => setMeal({ ...meal, [field.name]: e.target.value })}
+                />
+              </label>
+            ))}
             <button className="btn btn-primary" disabled={busy}>
               Add meal
             </button>
@@ -218,5 +213,20 @@ export default function Log() {
         </section>
       </div>
     </>
+  );
+}
+
+// One "eaten vs. target" box in the meals section
+function Total({ value, target, unit, label }) {
+  return (
+    <div className="stat">
+      <span className="stat-value">
+        {value}
+        <span className="stat-unit"> {unit}</span>
+      </span>
+      <span className="muted small">
+        of {target} {unit} {label}
+      </span>
+    </div>
   );
 }

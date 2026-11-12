@@ -15,6 +15,8 @@ const logSchema = new mongoose.Schema(
     mealName: { type: String, trim: true, maxlength: 100 },
     calories: { type: Number, min: 0, max: 5000 },
     proteinG: { type: Number, min: 0, max: 400 },
+    carbsG: { type: Number, min: 0, max: 800 },
+    fatG: { type: Number, min: 0, max: 300 },
   },
   { timestamps: true }
 );

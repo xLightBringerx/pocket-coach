@@ -30,7 +30,7 @@ async function logWorkout(userId, { date, exerciseId }) {
   return Log.create({ user: userId, date, type: "workout", exerciseId, exerciseName: exercise.name });
 }
 
-async function logMeal(userId, { date, mealName, calories, proteinG }) {
+async function logMeal(userId, { date, mealName, calories, proteinG, carbsG, fatG }) {
   checkDate(date);
   if (!mealName || !String(mealName).trim()) {
     throw new AppError("Meal name is required", 400);
@@ -42,6 +42,8 @@ async function logMeal(userId, { date, mealName, calories, proteinG }) {
     mealName: String(mealName).trim(),
     calories: Number(calories) || 0,
     proteinG: Number(proteinG) || 0,
+    carbsG: Number(carbsG) || 0,
+    fatG: Number(fatG) || 0,
   });
 }
 

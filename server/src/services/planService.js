@@ -66,8 +66,10 @@ function buildStats(plan, logs) {
   const mealLogs = logs.filter((l) => l.type === "meal");
   const trainingDays = plan.days.filter((d) => !d.isRest);
   const mealDays = new Set(mealLogs.map((l) => l.date)).size;
-  const totalCalories = mealLogs.reduce((sum, l) => sum + (l.calories || 0), 0);
-  const totalProtein = mealLogs.reduce((sum, l) => sum + (l.proteinG || 0), 0);
+
+  // Average per day that has meals logged
+  const average = (field) =>
+    mealDays ? Math.round(mealLogs.reduce((sum, l) => sum + (l[field] || 0), 0) / mealDays) : 0;
 
   return {
     workoutsPlanned: trainingDays.length,
@@ -75,8 +77,10 @@ function buildStats(plan, logs) {
     exercisesPlanned: trainingDays.reduce((sum, d) => sum + d.exercises.length, 0),
     exercisesDone: workoutLogs.length,
     mealDaysLogged: mealDays,
-    avgCalories: mealDays ? Math.round(totalCalories / mealDays) : 0,
-    avgProteinG: mealDays ? Math.round(totalProtein / mealDays) : 0,
+    avgCalories: average("calories"),
+    avgProteinG: average("proteinG"),
+    avgCarbsG: average("carbsG"),
+    avgFatG: average("fatG"),
   };
 }
 

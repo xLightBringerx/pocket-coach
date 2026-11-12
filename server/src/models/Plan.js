@@ -37,6 +37,8 @@ const checkInSchema = new mongoose.Schema(
     mealDaysLogged: Number,
     avgCalories: Number,
     avgProteinG: Number,
+    avgCarbsG: Number,
+    avgFatG: Number,
     createdAt: Date,
   },
   { _id: false }
