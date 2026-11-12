@@ -91,3 +91,18 @@ export const DIET_OPTIONS = [
   { value: "keto", label: "Keto" },
   { value: "other", label: "Other" },
 ];
+
+// "2026-11-12" -> "Thursday"
+export function dayNameOf(date) {
+  const [year, month, day] = date.split("-").map(Number);
+  return DAY_NAMES[new Date(year, month - 1, day).getDay()];
+}
+
+// ("2026-11-09", 3) -> "2026-11-12"
+export function addDaysTo(date, days) {
+  const [year, month, day] = date.split("-").map(Number);
+  const result = new Date(year, month - 1, day + days);
+  const mm = String(result.getMonth() + 1).padStart(2, "0");
+  const dd = String(result.getDate()).padStart(2, "0");
+  return `${result.getFullYear()}-${mm}-${dd}`;
+}
