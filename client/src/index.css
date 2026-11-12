@@ -1,21 +1,42 @@
+/* ==========================================================
+   PocketCoach theme
+   Background: purple -> dark green -> teal
+   Accent:     gold -> red (headings, logo, buttons)
+   Surfaces:   dark "glass" cards and bars
+   ========================================================== */
 :root {
-  --color-bg: #f6f7fb;
-  --color-surface: #ffffff;
-  --color-text: #1d2433;
-  --color-muted: #5f6b7a;
-  --color-border: #e2e6ee;
-  --color-primary: #2563eb;
-  --color-primary-dark: #1d4ed8;
-  --color-primary-soft: #eff4ff;
-  --color-error: #b42318;
-  --color-error-bg: #fdecec;
+  /* Colors */
+  --color-text: #f4f5fb;
+  --color-muted: #b4bacb;
+  --color-border: rgba(255, 255, 255, 0.14);
+  --color-surface: rgba(17, 20, 34, 0.78); /* cards, navbar, footer */
+  --color-surface-solid: #141827; /* phone menu, dropdown lists */
+  --color-primary: #ffd153; /* gold: links, active items, focus */
+  --color-primary-dark: #ff4d4d; /* red */
+  --color-primary-soft: rgba(255, 209, 83, 0.14);
+  --color-on-primary: #1b1033; /* dark text on gold/red buttons */
+  --color-error: #ffb4ab;
+  --color-error-bg: rgba(255, 77, 77, 0.16);
+  --color-success: #8ef0c8;
+  --color-success-bg: rgba(27, 158, 128, 0.22);
+  --color-warning: #ffd88a;
+  --color-warning-bg: rgba(255, 209, 83, 0.16);
+
+  /* Gradients */
+  --gradient-bg: linear-gradient(135deg, #560ad1, #18322c, #1b9e80);
+  --gradient-accent: linear-gradient(90deg, #ffd153, #ff4d4d);
+
+  /* Shapes */
   --radius: 12px;
-  --shadow: 0 1px 3px rgba(16, 24, 40, 0.08);
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+
+  color-scheme: dark; /* makes date pickers, dropdowns and scrollbars dark too */
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   line-height: 1.5;
   color: var(--color-text);
-  background: linear-gradient(135deg, #560ad1, #18322c, #1b9e80);
-  background-attachment: fixed;
+  min-height: 100%;
+  background: var(--gradient-bg);
+  background-attachment: fixed; /* same background on every page, even when scrolling */
 }
 
 * {
@@ -35,11 +56,22 @@ a:hover {
   text-decoration: underline;
 }
 
+/* All headings use the gold-to-red gradient text */
 h1,
 h2,
 h3 {
+  width: fit-content; /* gradient spans just the words, not the full width */
   line-height: 1.2;
   margin: 0 0 0.5em;
+  background: var(--gradient-accent);
+  -webkit-background-clip: text; /* needed for Chrome, Edge and Safari */
+  background-clip: text;
+  color: transparent;
+}
+
+::placeholder {
+  color: var(--color-muted);
+  opacity: 0.8;
 }
 
 /* ---------- Layout ---------- */
@@ -72,9 +104,16 @@ main.container {
   color: var(--color-muted);
 }
 
+.page-message h1,
+.page-message h2 {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .footer {
   border-top: 1px solid var(--color-border);
   background: var(--color-surface);
+  backdrop-filter: blur(10px);
   text-align: center;
   padding: 16px;
   font-size: 0.9rem;
@@ -91,6 +130,7 @@ main.container {
   top: 0;
   z-index: 10;
   background: var(--color-surface);
+  backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -101,10 +141,14 @@ main.container {
   height: 64px;
 }
 
+/* "PocketCoach" logo text */
 .brand {
   font-weight: 800;
-  font-size: 1.25rem;
-  color: var(--color-text);
+  font-size: 1.35rem;
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .brand:hover {
@@ -122,12 +166,17 @@ main.container {
   font-weight: 500;
 }
 
+.nav-links a:hover {
+  color: var(--color-text);
+  text-decoration: none;
+}
+
 .nav-links a.active {
   color: var(--color-primary);
 }
 
 .nav-links a.btn-primary {
-  color: #fff;
+  color: var(--color-on-primary);
 }
 
 .nav-user {
@@ -138,6 +187,7 @@ main.container {
   display: none;
   background: none;
   border: none;
+  color: var(--color-text);
   font-size: 1.5rem;
   cursor: pointer;
 }
@@ -152,6 +202,7 @@ main.container {
   font-weight: 600;
   text-align: center;
   cursor: pointer;
+  transition: filter 0.15s, border-color 0.15s;
 }
 
 .btn:hover {
@@ -164,12 +215,12 @@ main.container {
 }
 
 .btn-primary {
-  background: var(--color-primary);
-  color: #fff;
+  background: var(--gradient-accent);
+  color: var(--color-on-primary);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--color-primary-dark);
+  filter: brightness(1.08);
 }
 
 .btn-outline {
@@ -179,7 +230,7 @@ main.container {
 }
 
 .btn-outline:hover {
-  border-color: var(--color-muted);
+  border-color: var(--color-primary);
 }
 
 .btn-block {
@@ -189,6 +240,7 @@ main.container {
 /* ---------- Cards and forms ---------- */
 .card {
   background: var(--color-surface);
+  backdrop-filter: blur(10px);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
@@ -222,7 +274,13 @@ textarea {
   padding: 10px 12px;
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--color-text);
+}
+
+option {
+  background: var(--color-surface-solid);
+  color: var(--color-text);
 }
 
 input:focus,
@@ -282,6 +340,8 @@ legend {
 }
 
 .hero h1 {
+  margin-left: auto;
+  margin-right: auto;
   font-size: clamp(2rem, 5vw, 3rem);
 }
 
@@ -308,9 +368,9 @@ legend {
 
 /* ---------- Dashboard ---------- */
 .dashboard-title {
-  display: inline-block; /* gradient spans just the text, not the full page width */
-  background: linear-gradient(90deg, #ffd153, #ff4d4d); /* blue to purple */
-  -webkit-background-clip: text; /* needed for Chrome, Edge and Safari */
+  display: inline-block;
+  background: var(--gradient-accent); /* gold to red */
+  -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
@@ -338,13 +398,14 @@ legend {
 }
 
 .chip:hover {
-  border-color: var(--color-muted);
+  border-color: var(--color-primary);
 }
 
 .chip.active {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-  color: #fff;
+  background: var(--gradient-accent);
+  border-color: transparent;
+  color: var(--color-on-primary);
+  font-weight: 600;
 }
 
 .badge-row {
@@ -359,7 +420,7 @@ legend {
   padding: 2px 10px;
   border-radius: 999px;
   background: var(--color-primary-soft);
-  color: var(--color-primary-dark);
+  color: var(--color-primary);
   font-size: 0.8rem;
   font-weight: 600;
 }
@@ -371,8 +432,8 @@ legend {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: var(--color-primary-soft);
-  color: var(--color-primary-dark);
+  background: var(--gradient-accent);
+  color: var(--color-on-primary);
   font-weight: 700;
   font-size: 1.1rem;
 }
@@ -494,9 +555,14 @@ a.card:hover {
 }
 
 .price {
+  width: fit-content;
   margin: 0;
   font-size: 2rem;
   font-weight: 800;
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 @media (max-width: 700px) {
@@ -520,8 +586,8 @@ a.card:hover {
 
 /* ---------- Bookings ---------- */
 .alert-success {
-  background: #ecfdf3;
-  color: #067647;
+  background: var(--color-success-bg);
+  color: var(--color-success);
 }
 
 textarea {
@@ -556,23 +622,23 @@ textarea {
 }
 
 .status-pending {
-  background: #fef6e7;
-  color: #b54708;
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
 }
 
 .status-confirmed {
-  background: #ecfdf3;
-  color: #067647;
+  background: var(--color-success-bg);
+  color: var(--color-success);
 }
 
 .status-completed {
   background: var(--color-primary-soft);
-  color: var(--color-primary-dark);
+  color: var(--color-primary);
 }
 
 .status-cancelled,
 .status-declined {
-  background: #f2f4f7;
+  background: rgba(255, 255, 255, 0.08);
   color: var(--color-muted);
 }
 
@@ -668,6 +734,7 @@ textarea {
 .stat-value {
   font-size: 1.5rem;
   font-weight: 800;
+  color: var(--color-text);
 }
 
 .stat-unit {
@@ -688,7 +755,7 @@ textarea {
 }
 
 .rest-day {
-  background: #f9fafb;
+  background: rgba(17, 20, 34, 0.55);
 }
 
 .exercise-list {
@@ -757,7 +824,7 @@ textarea {
     align-items: stretch;
     gap: 12px;
     padding: 16px;
-    background: var(--color-surface);
+    background: var(--color-surface-solid);
     border-bottom: 1px solid var(--color-border);
   }
 
