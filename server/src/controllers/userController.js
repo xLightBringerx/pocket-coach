@@ -10,4 +10,22 @@ async function updateProfile(req, res, next) {
   }
 }
 
-module.exports = { updateProfile };
+async function updatePhoto(req, res, next) {
+  try {
+    const user = await userService.updateMyPhoto(req.user, req.body.photo);
+    res.json({ user: toPublicUser(user) });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function removePhoto(req, res, next) {
+  try {
+    const user = await userService.removeMyPhoto(req.user);
+    res.json({ user: toPublicUser(user) });
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = { updateProfile, updatePhoto, removePhoto };

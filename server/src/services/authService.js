@@ -18,6 +18,7 @@ function toPublicUser(user) {
     role: user.role,
     onboardingComplete: user.onboardingComplete,
     profile: user.profile || null,
+    photo: user.photo || "",
   };
 }
 

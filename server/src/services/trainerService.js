@@ -8,11 +8,11 @@ const EDITABLE_FIELDS = ["bio", "specialties", "yearsExperience", "location", "p
 function listTrainers({ goal } = {}) {
   const filter = { approved: true };
   if (goal) filter.specialties = goal; // matches if goal is in the specialties array
-  return TrainerProfile.find(filter).populate("user", "name").sort({ createdAt: -1 });
+  return TrainerProfile.find(filter).populate("user", "name photo").sort({ createdAt: -1 });
 }
 
 async function getTrainerById(id) {
-  const trainer = await TrainerProfile.findOne({ _id: id, approved: true }).populate("user", "name");
+  const trainer = await TrainerProfile.findOne({ _id: id, approved: true }).populate("user", "name photo");
   if (!trainer) throw new AppError("Trainer not found", 404);
 
   const services = await Service.find({ trainer: trainer._id, isActive: true }).populate("category", "name");
@@ -34,7 +34,7 @@ function upsertMyProfile(userId, data) {
   return TrainerProfile.findOneAndUpdate(
     { user: userId },
     { $set: updates },
-    { new: true, upsert: true, runValidators: true }
+    { returnDocument: "after", upsert: true, runValidators: true }
   );
 }
 

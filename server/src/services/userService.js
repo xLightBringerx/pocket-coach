@@ -38,4 +38,26 @@ async function updateMyProfile(user, body) {
   return user;
 }
 
-module.exports = { updateMyProfile };
+// Only small JPG, PNG or WebP images sent as data URLs
+const PHOTO_PATTERN = /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/;
+const MAX_PHOTO_LENGTH = 300000; // about 220 KB of image data
+
+async function updateMyPhoto(user, photo) {
+  if (typeof photo !== "string" || !PHOTO_PATTERN.test(photo)) {
+    throw new AppError("Photo must be a JPG, PNG or WebP image", 400);
+  }
+  if (photo.length > MAX_PHOTO_LENGTH) {
+    throw new AppError("That photo is too large. Please choose a smaller image.", 400);
+  }
+  user.photo = photo;
+  await user.save();
+  return user;
+}
+
+async function removeMyPhoto(user) {
+  user.photo = "";
+  await user.save();
+  return user;
+}
+
+module.exports = { updateMyProfile, updateMyPhoto, removeMyPhoto };
