@@ -179,22 +179,23 @@ On Render, CLIENT_URL lists both the local and live website addresses, separated
 
 How AI was used during development
 
-I used Claude (Anthropic) as a development assistant throughout this project, as the course allows. I reviewed all code given as I went along and made the final decisions and tested everything.
+I used Claude (Anthropic) as a development assistant throughout this project, as the course allows. I reviewed all code given as I went along and made adjustments, final decisions, and tested everything.
 
 Planning: turning the brief into an app outline, user stories, wireframes and the architecture and database design.
 Building: Claude wrote a step-by-step build guide with code for each step. I created the files, ran the code, tested each step and committed my work in small, separate commits.
 Debugging: working through real problems, such as files created in the wrong folders, a missing dependency in package.json, the Claude model rejecting a forced tool_choice (fixed by switching to auto plus a prompt instruction), a Mongoose deprecation warning, and MongoDB Atlas network access during deployment.
 Design: applying my own color scheme and gradients to the whole site.
 My decisions: a booking platform for local trainers with an AI coach; no AI-generated images or video (demo links to real videos instead); support for both imperial and metric units; and which features to cut to meet the deadline.
+
 Future work
-Workout and meal logging, with a weekly AI check-in that adjusts the next plan
-AI trainer matching based on the client's goal
-A progress avatar that changes with how consistently the client follows the plan
-Trainer dashboard pages for editing services and weekly hours (the API already supports this)
-Admin dashboard to approve trainers and manage categories
-Cloud image storage (Cloudinary or S3), email reminders and a custom domain
-Automated tests
-Disclaimer
+1. Workout and meal logging, with a weekly AI check-in that adjusts the next plan
+2. AI trainer matching based on the client's goal
+3. A progress avatar that changes with how consistently the client follows the plan
+4. Trainer dashboard pages for editing services and weekly hours (the API already supports this)
+5. Admin dashboard to approve trainers and manage categories
+6. Cloud image storage (Cloudinary or S3), email reminders and a custom domain
+7. Automated tests
+8. Disclaimer
 
 PocketCoach gives general fitness and nutrition guidance, not medical advice. Users should check with a doctor before starting a new program if they have a health condition.
 
