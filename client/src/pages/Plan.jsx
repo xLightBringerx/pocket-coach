@@ -5,6 +5,7 @@ import useApiData from "../hooks/useApiData";
 import { fetchCurrentPlan, generatePlan } from "../api/planApi";
 import { getErrorMessage } from "../api/client";
 import { formatDate } from "../utils/format";
+import CheckInCard from "../components/CheckInCard";
 
 export default function Plan() {
   const { user } = useAuth();
@@ -62,6 +63,9 @@ export default function Plan() {
         </div>
         {plan && (
           <div className="hero-actions">
+            <Link to="/log" className="btn btn-primary">
+              Daily log
+            </Link>
             <Link to="/onboarding" className="btn btn-outline">
               Edit profile
             </Link>
@@ -88,7 +92,19 @@ export default function Plan() {
           <section className="card plan-section">
             <h2>Coach's notes</h2>
             <p>{plan.summary}</p>
+            {plan.appliedAdjustments?.length > 0 && (
+              <>
+                <h3>Adjusted from your last check-in</h3>
+                <ul>
+                  {plan.appliedAdjustments.map((a) => (
+                    <li key={a}>{a}</li>
+                  ))}
+                </ul>
+              </>
+            )}
           </section>
+
+          <CheckInCard plan={plan} onUpdated={() => setVersion((v) => v + 1)} />
 
           <section className="card plan-section">
             <h2>Daily nutrition targets</h2>
