@@ -28,13 +28,22 @@ export default function Dashboard() {
         <UpcomingBookings />
 
         {isClient && user.onboardingComplete && (
-          <div className="card">
-            <h3>This week's plan</h3>
-            <p className="muted">Your AI workout and nutrition plan for the week.</p>
-            <Link to="/plan" className="btn btn-outline">
-              View my plan
-            </Link>
-          </div>
+          <>
+            <div className="card">
+              <h3>This week's plan</h3>
+              <p className="muted">Your AI workout and nutrition plan, plus your weekly check-in.</p>
+              <Link to="/plan" className="btn btn-outline">
+                View my plan
+              </Link>
+            </div>
+            <div className="card">
+              <h3>Today's log</h3>
+              <p className="muted">Tick off today's exercises and log what you ate.</p>
+              <Link to="/log" className="btn btn-primary">
+                Log today
+              </Link>
+            </div>
+          </>
         )}
       </div>
     </>
