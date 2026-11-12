@@ -11,7 +11,9 @@ const planRoutes = require("./routes/planRoutes");
 
 const app = express();
 
-app.use(cors({ origin: process.env.CLIENT_URL }));
+// CLIENT_URL can list several addresses: "http://localhost:5173,https://pocket-coach.vercel.app"
+const allowedOrigins = (process.env.CLIENT_URL || "").split(",").map((url) => url.trim());
+app.use(cors({ origin: allowedOrigins }));
 app.use(express.json());
 
 app.get("/api/health", (req, res) => {
