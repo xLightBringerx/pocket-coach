@@ -8,6 +8,7 @@ const serviceRoutes = require("./routes/serviceRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
 const userRoutes = require("./routes/userRoutes");
 const planRoutes = require("./routes/planRoutes");
+const logRoutes = require("./routes/logRoutes");
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use("/api/services", serviceRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/plans", planRoutes);
+app.use("/api/logs", logRoutes);
 
 // These two must stay last
 app.use(notFound);
