@@ -32,6 +32,7 @@ const userSchema = new mongoose.Schema(
     role: { type: String, enum: ["client", "trainer", "admin"], default: "client" },
     profile: profileSchema,
     onboardingComplete: { type: Boolean, default: false },
+    photo: { type: String, default: "" }, // small profile photo stored as a data URL
   },
   { timestamps: true } // adds createdAt and updatedAt automatically
 );
